@@ -1,0 +1,72 @@
+.model small
+.386
+
+.data
+DATA DW 0000H
+msg db 10,13,"Enter the first no.:: $"
+msg1 db 10,13,"Enter the second no.:: $"
+msg2 db 10,13,"The Resultant sum is :: $"
+
+.code
+.startup
+MOV AH,09
+MOV DX,OFFSET msg
+INT 21H
+
+MOV BX,0
+MOV CX,4
+AGAIN: MOV AH,01 ;1ST NO. ENTERED
+INT 21H
+SUB AL,30H
+SHL BX,4
+ADD BL,AL
+LOOP AGAIN
+
+MOV DATA,BX
+
+MOV AH,09
+MOV DX,OFFSET msg1
+INT 21H
+MOV BX,0
+MOV CX,4
+AGAIN1:MOV AH,01 ;2nd NO. ENTERED
+INT 21H
+
+SUB AL,30H
+SHL BX,4
+ADD BL,AL
+LOOP AGAIN1
+
+MOV AX,DATA
+
+MOV CX,0
+ADD AL,BL
+DAA
+MOV BL,AL
+ADC AH,BH
+MOV AL,AH
+DAA
+MOV BH,AL
+
+
+
+MOV AH,09
+MOV DX,OFFSET msg2
+INT 21H
+
+jnc l6
+mov ah, 02h
+mov dl, "1"
+int 21h 
+
+l6: MOV DX,0
+MOV CX,4
+AGAIN2: ROL BX,4
+MOV DL,BL
+AND DL,0FH
+ADD DL,30H
+MOV AH,02
+INT 21H
+LOOP AGAIN2
+L2: .EXIT
+END

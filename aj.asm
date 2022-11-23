@@ -1,0 +1,44 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG1 DB 10,13, "ENTER THE FIRST NUMBER 0-9::> $"
+MSG2 DB 10,13, "ENTER THE SECOND NUMBER 0-9::> $"
+ADD1 DB 10,13, "RESULT OF ADDITION IS::> $"
+.CODE
+.STARTUP	
+MAIN PROC
+							MOV AH,09
+							MOV DX,OFFSET MSG1
+							INT 21H
+
+							MOV AH,01
+							INT 21H
+							SUB AL,30H
+							MOV BL,AL 		
+
+							MOV AH,09
+							MOV DX,OFFSET MSG2
+							INT 21H
+
+							MOV AH,01
+							INT 21H
+							SUB AL,30H
+							MOV CL,AL
+
+							ADD BL,CL
+							MOV DL,BL
+							ADD DL,30H
+						 	MOV AH,02
+							INT 21H
+
+							MOV AH,09
+							MOV DX, OFFSET ADD1
+							INT 21H
+
+							
+							MOV AH,4CH
+					INT 21H
+
+MAIN ENDP
+.EXIT
+END

@@ -1,0 +1,106 @@
+.model small
+.386
+.data
+ARRAY DB 100 DUP (?)
+DATA1 dw 0000H
+DATA2 dw 0000H
+NUMB dw 0000h
+msg db 10,13,"Enter the size of the array :: $"
+msg2 db 10,13,"Enter the array :: $"
+msg3 db 10,13,"The sorted array is :: $"
+msg4 db 10,13, "The array you entered is ::$"
+
+.code
+.startup
+
+MOV AH,09
+MOV DX,OFFSET msg
+INT 21H
+
+MOV AH,01
+INT 21H
+SUB AL,30H
+MOV AH,0
+MOV CX,AX
+MOV DATA1,AX
+
+MOV AH,09
+MOV DX,OFFSET msg2
+INT 21H
+
+MOV AH,0
+MOV SI, 0
+MOV BX, OFFSET ARRAY
+L1: MOV DL, 0AH ; jump onto next line
+MOV AH, 02H
+INT 21H
+;MOV DX, SI ; input element of the array
+MOV AH, 01H
+INT 21H
+;MOV AH, 00
+SUB AL,30H
+;MOV SI, DX
+MOV [BX + SI], AL
+INC SI
+LOOP L1
+
+
+MOV AH,09
+MOV DX,OFFSET msg4
+INT 21H
+
+MOV CX, DATA1
+MOV SI, OFFSET ARRAY
+L50: MOV DL, 0AH ; jump onto next line
+MOV AH, 02H
+INT 21H
+MOV DX, [SI]
+INC SI
+ADD DL, 30H
+MOV AH, 02
+INT 21H
+LOOP L50
+
+
+
+MOV CX, DATA1
+MOV BX, OFFSET ARRAY
+L2: MOV SI, 0
+MOV AX, SI
+INC AX
+MOV DI, AX
+MOV DATA2, CX 
+
+MOV CX, DATA1
+MOV NUMB, CX
+DEC NUMB
+MOV CX, NUMB
+;MOV DI, 0
+L3: MOV AL, [BX + SI]
+CMP AL, [BX + DI]
+JL L4
+XCHG AL, [BX + DI]
+MOV [BX + SI], AL
+L4: INC SI
+    INC DI
+    LOOP L3
+    MOV CX, DATA2
+LOOP L2
+
+MOV CX, DATA1
+LEA SI, ARRAY
+;MOV BX, OFFSET ARRAY
+MOV AH,09
+MOV DX,OFFSET msg3
+INT 21H
+L5: MOV DL, 0AH ; jump onto next line
+MOV AH, 02H
+INT 21H
+MOV DX, [SI]
+INC SI
+ADD DL, 30H
+MOV AH, 02
+INT 21H
+LOOP L5
+.EXIT
+END

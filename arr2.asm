@@ -1,0 +1,86 @@
+.model small
+.386
+.data
+ARRAY DW 20 DUP (?)
+DATA1 dw 0000H
+DATA2 DW 0000h
+DATA3 DW 0000h
+msg db 10,13,"Enter the size of the array :: $"
+msg2 db 10,13,"Enter the array :: $"
+msg3 db 10,13,"The entered array is :: $"
+
+.code
+.startup
+MOV AH,09
+MOV DX,OFFSET msg
+INT 21H
+
+MOV AH,01
+INT 21H
+SUB AL,30H
+MOV AH,0
+MOV CX, AX
+
+MOV DATA1,AX
+
+MOV AH,09
+MOV DX,OFFSET msg2
+INT 21H
+
+MOV AH,0
+MOV SI, 0
+MOV BX, OFFSET ARRAY
+L1: MOV DL, 0AH ; jump onto next line
+MOV AH, 02H
+INT 21H
+MOV DX, SI ; input element of the array
+Mov DATA2, CX
+;MOV DX, 00
+NUM PROC
+MOV CX, 2
+AGAIN: MOV AH, 01H
+INT 21H
+SUB AL,30H
+MOV DX, 00
+SHL DX,4
+ADD DL,AL
+LOOP AGAIN
+MOV AX, DX
+ENDP NUM
+
+MOV CX, DATA2
+;MOV SI, 00
+MOV [BX + SI], AX
+INC SI
+LOOP L1
+
+
+MOV AH, 09H
+MOV DX, OFFSET MSG3
+INT 21H
+
+MOV CX, DATA1
+MOV SI, 0 
+L2:mov ah, 02h
+mov dl, 0ah
+int 21h
+mov dl, 0dh
+int 21h
+MOV DATA3, CX
+
+
+MOV CX, 2
+MOV SI, 00
+MOV DX, [BX+SI] 
+AGAIN2: ROL DX, 4                    
+ADD DL, 30h
+MOV AH, 02
+INT 21H
+LOOP AGAIN2
+
+MOV CX, DATA3
+INC SI
+LOOP L2
+
+.EXIT
+END
